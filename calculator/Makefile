@@ -1,18 +1,22 @@
-# Простой make-file без переменных, для релиза и дебага
-
 .PHONY: all debug release clean
+
+RELEASE_FLAGS = -O2 -Wall -DNDEBUG
+DEBUG_FLAGS   = -g -O0 -Wall
+RELEASE_EXEC  = calculator
+DEBUG_EXEC    = calculator-dbg
+SOURCE        = main.cpp
 
 all: debug release
 
-debug: hello-dbg
+debug: $(DEBUG_EXEC)
 
-hello-dbg: hello.cpp
-	g++ -g -O0 hello.cpp -o hello-dbg -Wall
+$(DEBUG_EXEC): $(SOURCE)
+	g++ $(DEBUG_FLAGS) $(SOURCE) -o $(DEBUG_EXEC) 
 
-release: hello
+release: $(RELEASE_EXEC)
 
-hello: hello.cpp
-	g++ -O2 hello.cpp -o hello -DNDEBUG -Wall
+$(RELEASE_EXEC): $(SOURCE)
+	g++ $(RELEASE_FLAGS) $(SOURCE) -o $(RELEASE_EXEC)
 
 clean:
-	rm -f hello hello-dbg
+	rm -f $(RELEASE_EXEC) $(DEBUG_EXEC)
