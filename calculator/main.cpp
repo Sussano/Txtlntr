@@ -1,50 +1,61 @@
 #include <iostream>
-#include <getopt.h>
+#include <cmath>
+#include <cstdlib>
 
-using namespace std;
+struct FigureParams {
+  double param1;
+  double param2;
+  double param3;
+};
 
-int main(int argc, char *argv[])
-{
-
-	{ if (argc==1)
-    {
-        cout<<"КАЛЬКУЛЯТОР"<< endl<< "Чтобы выбрать действие, нужно ввести один из параметров:" << endl<< "-s — cложение всех введенных значений" << endl << "-m — вычетание первого значения из всех последующий введенных значений"<< endl << "Для того чтобы продолжить запустите программу еще раз с нужным параметром и введите значения через пробел"<< endl;
-    }        
-
-	int opt, i, result = 0, x, b ,t;
-	while ((opt = getopt (argc, argv, "m:s:")) != -1)
-        {
-            switch (opt)
-            {
-                case 's':
-        			for(i = 0; i<argc; i++)
-        			{
-            				cout<< i << ": "<< argv[i] << endl;
-        			}			
-        			for(i=2; i<argc; i++)
-        			{
-            			x = strtol(argv[i], NULL, 10);
-            			result=result + x;
-        			}
-        		cout<< "Результат: "<< result<<endl;
-               	break;
-               	
-               	case 'm':
-    				for(i = 0; i<argc; i++)
-   			 		{
-        				cout<< i << ": "<< argv[i] << endl;
-    				}	
-    				b = 0;
-    				for(i=2; i<argc; i++)
-    				{
-       					x = strtol(argv[i], NULL, 10);
-          				t = strtol(argv[2], NULL, 10);
-        				result=result + x;
-        				b=result - t*2;
-    				}
-    			cout<< "Результат: "<< b <<endl;
-                break;       
-            }
-        }
-    }
+double CalcCircleArea(double radius) {
+  return 3.14 * radius * radius;
 }
+
+double CalcTriangleArea(double a, double b, double c) {
+  double p = (a + b + c) / 2.0;
+  return sqrt(p * (p - a) * (p - b) * (p - c));
+}
+
+int main(int argc, char** argv) {
+  if (argc == 1 or argc == 2) {
+  std::cout << "Usage ./calculator -o <Figur_type> <params>" << std::endl;
+  std::cout << "Supported figure types: circle, triangle" << std::endl;
+  std::cout << "Params for circle: <radius>" << std::endl;
+  std::cout << "Params for triangle: <a> <b> <c>" << std::endl;
+  return 0;
+  }
+  
+  std::string figureType = argv[2];
+  
+  FigureParams params;
+  if (figureType == "circle") {
+    if (argc != 4) {
+      std::cout << "Error: invalid number of arguments" << std::endl;
+      return 1;
+    }
+    params.param1 = atof(argv[3]);
+    
+    double area = CalcCircleArea(params.param1);
+    std::cout << "Circle area: " << area << std::endl;
+    
+  } else if (figureType == "triangle") {
+    if (argc != 6) {
+      std::cout << "Error: invalid number of arguments" << std::endl;
+      return 1;
+    }
+    params.param1 = atof(argv[3]);
+    params.param2 = atof(argv[4]);
+    params.param3 = atof(argv[5]);
+    
+    double area = CalcTriangleArea(params.param1, params.param2, params.param3);
+    std::cout << "Triangle area: " << area << std::endl;
+    
+  } else {
+    std::cout << "Error: unsupported figure type" << std::endl;
+    return 1;
+  }
+  
+  return 0;
+}
+  
